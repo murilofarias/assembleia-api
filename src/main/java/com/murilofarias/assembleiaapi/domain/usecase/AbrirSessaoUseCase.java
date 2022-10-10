@@ -23,7 +23,8 @@ public class AbrirSessaoUseCase {
     ThreadPoolTaskScheduler taskScheduler;
 
     @Autowired
-    ResultadoSessaoRepository resultadoSessaoRepository;
+    FecharSessaoUseCase fecharSessaoUseCase;
+
 
     public Pauta execute(Long pautaId, Integer duracao){
         Pauta pauta;
@@ -35,59 +36,10 @@ public class AbrirSessaoUseCase {
         }
 
 
-        Runnable apurarSessaoUseCase = getApurarSessaoUseCase(pautaId);
-        Runnable fecharSessaoUseCase = getFecharSessaoUseCase(pautaId, apurarSessaoUseCase);
-
         pauta.abrirSessao(duracao);
         pautaRepository.save(pauta);
-        taskScheduler.schedule(fecharSessaoUseCase, new Date(System.currentTimeMillis() + 60000L *duracao));
+        taskScheduler.schedule(fecharSessaoUseCase.execute(pautaId), new Date(System.currentTimeMillis() + 60000L *duracao));
         return pauta;
     }
 
-
-    @Scheduled
-    public Runnable getFecharSessaoUseCase(Long pautaId, Runnable apurarSessaoUseCase){
-        return new Runnable() {
-            public void run() {
-                System.out.println("Task performed on: " + new Date() + "n" +
-                        "Thread's name: " + Thread.currentThread().getName());
-
-                Pauta pauta;
-                try {
-                    pauta = pautaRepository.findById(pautaId).orElseThrow();
-                }catch(NoSuchElementException ex) {
-                    Thread.currentThread().interrupt();
-                    return;
-                }
-
-                pauta.fecharSessao();
-                pautaRepository.save(pauta);
-                taskScheduler.submit(apurarSessaoUseCase);
-                System.out.println("Task finished on: " + new Date() + "n" +
-                        "Thread's name: " + Thread.currentThread().getName());
-
-                System.out.println("Sessão da pauta com id " + pautaId + " foi fechada");
-            }
-        };
-    }
-
-    @Scheduled
-    public Runnable getApurarSessaoUseCase(Long pautaId){
-        return new Runnable() {
-            public void run() {
-                Pauta pauta;
-                try {
-                    pauta = pautaRepository.findByIdEager(pautaId).orElseThrow();
-                }catch(NoSuchElementException ex) {
-                    Thread.currentThread().interrupt();
-                    return;
-                }
-                ResultadoSessao resultadoSessao = new ResultadoSessao(pauta);
-                resultadoSessaoRepository.save(resultadoSessao);
-                pauta.finalizarApuracao();
-                pautaRepository.save(pauta);
-                System.out.println("Resultado da secao com id : " + pautaId + "/ S: " + resultadoSessao.getSim() + " N: " + resultadoSessao.getNao());
-            }
-        };
-    }
 }
