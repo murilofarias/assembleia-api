@@ -3,21 +3,19 @@ package com.murilofarias.assembleiaapi.controller;
 import com.murilofarias.assembleiaapi.controller.dto.request.AbrirSessaoRequestDto;
 import com.murilofarias.assembleiaapi.controller.dto.request.CadastrarPautaRequestDto;
 import com.murilofarias.assembleiaapi.controller.dto.request.CadastrarVotoRequestDto;
-import com.murilofarias.assembleiaapi.controller.dto.response.AssociadoResponseDto;
 import com.murilofarias.assembleiaapi.controller.dto.response.PautaResponseDto;
 import com.murilofarias.assembleiaapi.controller.dto.response.VotoResponseDto;
-import com.murilofarias.assembleiaapi.domain.model.Associado;
 import com.murilofarias.assembleiaapi.domain.model.Pauta;
 import com.murilofarias.assembleiaapi.domain.model.Voto;
 import com.murilofarias.assembleiaapi.domain.usecase.AbrirSessaoUseCase;
 import com.murilofarias.assembleiaapi.domain.usecase.CadastrarPautaUseCase;
 import com.murilofarias.assembleiaapi.domain.usecase.CadastrarVotoUseCase;
 import com.murilofarias.assembleiaapi.domain.usecase.ListarPautasUseCase;
+import com.murilofarias.assembleiaapi.util.CpfParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,8 +69,8 @@ public class VotacaoController {
 
     @PostMapping("/votos")
     public ResponseEntity<VotoResponseDto> cadastrarVoto(@Valid @RequestBody CadastrarVotoRequestDto cadastrarVotoRequestDto) {
-
-        Voto novoVoto = cadastrarVotoUseCase.execute(cadastrarVotoRequestDto.getPautaId(), cadastrarVotoRequestDto.getCpfAssociado(), cadastrarVotoRequestDto.getVoto());
+        String cpfFormatado = CpfParser.eliminateDotsAndDashes(cadastrarVotoRequestDto.getCpfAssociado());
+        Voto novoVoto = cadastrarVotoUseCase.execute(cadastrarVotoRequestDto.getPautaId(), cpfFormatado, cadastrarVotoRequestDto.getVoto());
         return new ResponseEntity<>(new VotoResponseDto(novoVoto), HttpStatus.CREATED);
     }
 }

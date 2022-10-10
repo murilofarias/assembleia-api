@@ -5,6 +5,7 @@ import com.murilofarias.assembleiaapi.controller.dto.response.AssociadoResponseD
 import com.murilofarias.assembleiaapi.domain.model.Associado;
 import com.murilofarias.assembleiaapi.domain.usecase.CadastrarAssociadoUseCase;
 import com.murilofarias.assembleiaapi.domain.usecase.ListarAssociadosUseCase;
+import com.murilofarias.assembleiaapi.util.CpfParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +31,8 @@ public class GestaoAssociadoController {
     public ResponseEntity<AssociadoResponseDto> cadastrarAssociado(
             @Valid @RequestBody CadastrarAssociadoRequestDto cadastrarAssociadoReqDto) {
 
-        Associado novoAssociado = cadastrarAssociadoUseCase.execute(cadastrarAssociadoReqDto.getCpf(), cadastrarAssociadoReqDto.getNome());
+        String cpfFormatado = CpfParser.eliminateDotsAndDashes(cadastrarAssociadoReqDto.getCpf());
+        Associado novoAssociado = cadastrarAssociadoUseCase.execute(cpfFormatado, cadastrarAssociadoReqDto.getNome());
         AssociadoResponseDto  associadoResponseDto = new AssociadoResponseDto(novoAssociado);
         return new ResponseEntity<>(associadoResponseDto, HttpStatus.CREATED);
     }
