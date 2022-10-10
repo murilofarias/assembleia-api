@@ -28,6 +28,9 @@ public class CadastrarVotoUseCase {
     PautaRepository pautaRepository;
 
     @Autowired
+    ValidarVotoUseCase validarVotoUseCase;
+
+    @Autowired
     ThreadPoolTaskScheduler taskScheduler;
 
     public Voto execute(Long pautaId, String cpfAssociado, String votoSimbolo){
@@ -61,55 +64,16 @@ public class CadastrarVotoUseCase {
         Voto novoVoto = associado.votarPauta(pauta, votoValor);
 
         novoVoto = votoRepository.save(novoVoto);
-        Runnable validacaoVotoUseCase = getValidacaoVotoUseCase(novoVoto.getId(), cpfAssociado);
-        taskScheduler.submit(validacaoVotoUseCase);
+        taskScheduler.submit(validarVotoUseCase.execute(novoVoto.getId(), cpfAssociado));
+        System.out.println("Voto submetido a validação");
         return novoVoto;
     }
 
     private VotoValor avaliarVotoValor(String votoSimbolo){
         if(!votoSimbolo.equalsIgnoreCase("S") && !votoSimbolo.equalsIgnoreCase("N") )
-            throw new DomainException("Erro no cadastro de voto", "O voto só aceita símbolos \'S\' e \'N\'");
+            throw new DomainException("Erro no cadastro de voto", "O voto só aceita símbolos 'S' e 'N'");
 
         return votoSimbolo.equalsIgnoreCase("S") ? VotoValor.SIM: VotoValor.NAO;
     }
-    public Runnable getValidacaoVotoUseCase(Long votoId, String cpfAssociado){
-        return new Runnable() {
-            public void run() {
-                Voto voto;
-                try {
-                    voto = votoRepository.findById(votoId).orElseThrow();
-                }catch(NoSuchElementException ex) {
-                    throw new ResourceNotFoundException("Nenhum voto com id " + votoId + " foi encontrado!");
-                }
-                CpfValidation response;
 
-                try {
-                    WebClient client = WebClient.create();
-
-                    response = client.get()
-                            .uri("https://user-info.herokuapp.com/users/" + cpfAssociado)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .retrieve()
-                            .bodyToMono(CpfValidation.class)
-                            .block();
-                    System.out.println(response.toString());
-                    System.out.println(response.getStatus().toString());
-                }catch(Exception e){
-                    voto.invalidarVoto();
-                    votoRepository.save(voto);
-                    Thread.currentThread().interrupt();
-                    return;
-                }
-
-
-                if(response.getStatus().equals(CpfValidationStatus.ABLE_TO_VOTE))
-                    voto.validarVoto();
-                else
-                    voto.invalidarVoto();
-
-                votoRepository.save(voto);
-                System.out.println("Voto computado com valor " + voto.getValor().toString());
-            }
-        };
-    }
 }
