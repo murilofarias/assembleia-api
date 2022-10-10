@@ -1,7 +1,6 @@
 package com.murilofarias.assembleiaapi.controller.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.murilofarias.assembleiaapi.domain.model.Associado;
 import com.murilofarias.assembleiaapi.domain.model.Pauta;
 import com.murilofarias.assembleiaapi.domain.model.SessaoStatus;
 import lombok.Getter;

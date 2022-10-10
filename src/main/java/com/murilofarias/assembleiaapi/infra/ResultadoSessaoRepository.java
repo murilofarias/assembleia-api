@@ -1,6 +1,5 @@
 package com.murilofarias.assembleiaapi.infra;
 
-import com.murilofarias.assembleiaapi.domain.model.Pauta;
 import com.murilofarias.assembleiaapi.domain.model.ResultadoSessao;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
