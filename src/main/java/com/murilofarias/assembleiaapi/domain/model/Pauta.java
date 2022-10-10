@@ -1,14 +1,12 @@
 package com.murilofarias.assembleiaapi.domain.model;
 
 import com.murilofarias.assembleiaapi.domain.error.DomainException;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 
 import javax.persistence.*;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -31,13 +29,13 @@ public class Pauta {
     private List<Voto> votos =  new ArrayList<>();
 
     @Column
-    private Date dataFechamento;
-
-    @Column
     private SessaoStatus status;
 
     @Column
     private Integer duracaoSessao;
+
+    @Column
+    private OffsetDateTime dataAbertura;
 
     public Pauta(String titulo, String descricao){
         this.titulo = titulo;
@@ -52,6 +50,7 @@ public class Pauta {
         if(duracaoSessao > 0 && duracaoSessao <= 30) {
             this.duracaoSessao = duracaoSessao;
             this.status = SessaoStatus.ABERTA;
+            this.dataAbertura = OffsetDateTime.now();
         }
         else
             throw new DomainException("Erro na abertura da Sessão", "Duração da sessão deve ser maior que 0 e menor ou igual a 30 minutos");
