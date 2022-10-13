@@ -22,10 +22,6 @@ public class Consumer {
     ValidarVotoUseCase validarVotoUseCase;
 
 
-    @KafkaListener(topics = "resultadoSessao", groupId = "group_id")
-    public void consumeResultado(ResultadoMessageDto resultadoSessao) throws IOException  {
-        logger.info(String.format("#### -> Consumed message -> %s", resultadoSessao.getPauta().getTitulo()));
-    }
 
     @KafkaListener(topics = "votos", groupId = "group_id")
     public void consumeVoto(VotoMessageDto voto) throws IOException {
