@@ -4,9 +4,11 @@ import com.murilofarias.assembleiaapi.controller.dto.request.AbrirSessaoRequestD
 import com.murilofarias.assembleiaapi.controller.dto.request.CadastrarPautaRequestDto;
 import com.murilofarias.assembleiaapi.controller.dto.request.CadastrarVotoRequestDto;
 import com.murilofarias.assembleiaapi.controller.dto.response.PautaResponseDto;
+import com.murilofarias.assembleiaapi.controller.dto.response.ResultadoResponseDto;
 import com.murilofarias.assembleiaapi.controller.dto.response.VotoResponseDto;
 import com.murilofarias.assembleiaapi.controller.dto.response.VotoSemPautaDto;
 import com.murilofarias.assembleiaapi.domain.model.Pauta;
+import com.murilofarias.assembleiaapi.domain.model.ResultadoSessao;
 import com.murilofarias.assembleiaapi.domain.model.Voto;
 import com.murilofarias.assembleiaapi.domain.usecase.*;
 import com.murilofarias.assembleiaapi.infra.ResultadoSessaoRepository;
@@ -41,6 +43,9 @@ public class VotacaoController {
     @Autowired
     EncontrarVotosUseCase encontrarVotosUseCase;
 
+    @Autowired
+    EncontrarResultadoUseCase encontrarResultadoUseCase;
+
     @PostMapping("/pautas")
     public ResponseEntity<PautaResponseDto> cadastrarPauta(@Valid @RequestBody CadastrarPautaRequestDto cadastrarPautaRequestDto) {
 
@@ -69,6 +74,14 @@ public class VotacaoController {
         Page<Voto> votos = encontrarVotosUseCase.execute(pautaId, pageable);
         Page<VotoSemPautaDto> votoSemPautaDtos = votos.map(VotoSemPautaDto::new);
         return new ResponseEntity<>(votoSemPautaDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/pautas/{id}/resultado")
+    public ResponseEntity<ResultadoResponseDto> encontrarVotos(
+            @PathVariable("id") Long id) {
+        ResultadoSessao resultadoSessao = encontrarResultadoUseCase.execute(id);
+        ResultadoResponseDto resultadoResponseDto = new ResultadoResponseDto(resultadoSessao);
+        return new ResponseEntity<>(resultadoResponseDto, HttpStatus.OK);
     }
 
     @PatchMapping("/abrir-sessao/pautas/{id}")
