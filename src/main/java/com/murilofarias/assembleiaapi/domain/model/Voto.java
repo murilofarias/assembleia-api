@@ -3,6 +3,7 @@ package com.murilofarias.assembleiaapi.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
@@ -27,6 +28,7 @@ public class Voto{
     private VotoStatus status;
     @Column
     private OffsetDateTime data;
+
     @Column
     private VotoValor valor;
 
