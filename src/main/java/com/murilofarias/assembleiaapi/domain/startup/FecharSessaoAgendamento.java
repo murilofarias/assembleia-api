@@ -4,7 +4,7 @@ package com.murilofarias.assembleiaapi.domain.startup;
 import com.murilofarias.assembleiaapi.domain.model.Pauta;
 import com.murilofarias.assembleiaapi.domain.model.SessaoStatus;
 import com.murilofarias.assembleiaapi.domain.usecase.FecharSessaoUseCase;
-import com.murilofarias.assembleiaapi.infra.PautaRepository;
+import com.murilofarias.assembleiaapi.infra.repository.PautaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

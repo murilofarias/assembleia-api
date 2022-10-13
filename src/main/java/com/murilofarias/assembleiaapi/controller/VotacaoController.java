@@ -11,7 +11,6 @@ import com.murilofarias.assembleiaapi.domain.model.Pauta;
 import com.murilofarias.assembleiaapi.domain.model.ResultadoSessao;
 import com.murilofarias.assembleiaapi.domain.model.Voto;
 import com.murilofarias.assembleiaapi.domain.usecase.*;
-import com.murilofarias.assembleiaapi.infra.ResultadoSessaoRepository;
 import com.murilofarias.assembleiaapi.util.CpfParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

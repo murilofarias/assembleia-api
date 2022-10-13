@@ -1,4 +1,4 @@
-package com.murilofarias.assembleiaapi.infra;
+package com.murilofarias.assembleiaapi.infra.repository;
 
 import com.murilofarias.assembleiaapi.domain.model.Voto;
 import com.murilofarias.assembleiaapi.domain.model.VotoStatus;

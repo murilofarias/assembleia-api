@@ -3,14 +3,13 @@ package com.murilofarias.assembleiaapi.domain.usecase;
 import com.murilofarias.assembleiaapi.domain.error.DomainException;
 import com.murilofarias.assembleiaapi.domain.error.ResourceNotFoundException;
 import com.murilofarias.assembleiaapi.domain.model.*;
-import com.murilofarias.assembleiaapi.infra.AssociadoRepository;
-import com.murilofarias.assembleiaapi.infra.PautaRepository;
-import com.murilofarias.assembleiaapi.infra.VotoRepository;
+import com.murilofarias.assembleiaapi.domain.service.message.MessageProducer;
+import com.murilofarias.assembleiaapi.infra.repository.AssociadoRepository;
+import com.murilofarias.assembleiaapi.infra.repository.PautaRepository;
+import com.murilofarias.assembleiaapi.infra.repository.VotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 
 import java.util.NoSuchElementException;
@@ -32,6 +31,9 @@ public class CadastrarVotoUseCase {
 
     @Autowired
     ThreadPoolTaskScheduler taskScheduler;
+
+    @Autowired
+    MessageProducer producer;
 
     public Voto execute(Long pautaId, String cpfAssociado, String votoSimbolo){
 
@@ -64,7 +66,8 @@ public class CadastrarVotoUseCase {
         Voto novoVoto = associado.votarPauta(pauta, votoValor);
 
         novoVoto = votoRepository.save(novoVoto);
-        taskScheduler.submit(validarVotoUseCase.execute(novoVoto.getId(), cpfAssociado));
+        producer.sendVoto(novoVoto);
+        //taskScheduler.submit(validarVotoUseCase.execute(novoVoto.getId(), cpfAssociado));
         System.out.println("Voto submetido a validação");
         return novoVoto;
     }

@@ -2,11 +2,8 @@ package com.murilofarias.assembleiaapi.domain.usecase;
 
 import com.murilofarias.assembleiaapi.domain.error.ResourceNotFoundException;
 import com.murilofarias.assembleiaapi.domain.model.Pauta;
-import com.murilofarias.assembleiaapi.domain.model.ResultadoSessao;
-import com.murilofarias.assembleiaapi.infra.PautaRepository;
-import com.murilofarias.assembleiaapi.infra.ResultadoSessaoRepository;
+import com.murilofarias.assembleiaapi.infra.repository.PautaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 

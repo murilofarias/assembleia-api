@@ -2,13 +2,12 @@ package com.murilofarias.assembleiaapi.domain.usecase;
 
 import com.murilofarias.assembleiaapi.domain.model.Pauta;
 import com.murilofarias.assembleiaapi.domain.model.ResultadoSessao;
-import com.murilofarias.assembleiaapi.infra.PautaRepository;
-import com.murilofarias.assembleiaapi.infra.ResultadoSessaoRepository;
+import com.murilofarias.assembleiaapi.domain.service.message.MessageProducer;
+import com.murilofarias.assembleiaapi.infra.repository.PautaRepository;
+import com.murilofarias.assembleiaapi.infra.repository.ResultadoSessaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.NoSuchElementException;
 
 
@@ -20,6 +19,9 @@ public class ApurarSessaoUseCase {
 
     @Autowired
     ResultadoSessaoRepository resultadoSessaoRepository;
+
+    @Autowired
+    MessageProducer producer;
 
     public Runnable execute(Long pautaId){
         return new Runnable() {
@@ -37,6 +39,7 @@ public class ApurarSessaoUseCase {
                 pauta.finalizarApuracao();
                 pautaRepository.save(pauta);
                 System.out.println("Resultado da secao com id : " + pautaId + "/ S: " + resultadoSessao.getSim() + " N: " + resultadoSessao.getNao());
+                producer.sendResultadoSessao(resultadoSessao);
             }
         };
     }

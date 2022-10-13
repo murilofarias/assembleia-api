@@ -1,7 +1,7 @@
 package com.murilofarias.assembleiaapi.domain.usecase;
 
 import com.murilofarias.assembleiaapi.domain.model.Associado;
-import com.murilofarias.assembleiaapi.infra.AssociadoRepository;
+import com.murilofarias.assembleiaapi.infra.repository.AssociadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
