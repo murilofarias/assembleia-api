@@ -56,7 +56,6 @@ public class ValidarVotoUseCase {
                 voto.invalidarVoto();
 
             votoRepository.save(voto);
-            System.out.println("Voto computado com valor " + voto.getValor().toString());
             return voto;
     }
 

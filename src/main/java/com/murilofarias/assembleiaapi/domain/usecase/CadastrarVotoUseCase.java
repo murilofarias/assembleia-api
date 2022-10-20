@@ -67,8 +67,6 @@ public class CadastrarVotoUseCase {
 
         novoVoto = votoRepository.save(novoVoto);
         producer.sendVoto(novoVoto);
-        //taskScheduler.submit(validarVotoUseCase.execute(novoVoto.getId(), cpfAssociado));
-        System.out.println("Voto submetido a validação");
         return novoVoto;
     }
 

@@ -36,7 +36,7 @@ public class FecharSessaoUseCase {
 
                 pauta.fecharSessao();
                 pautaRepository.save(pauta);
-                taskScheduler.schedule(apurarSessaoUseCase.execute(pautaId),  new Date(System.currentTimeMillis() + 15000L));
+                taskScheduler.schedule(apurarSessaoUseCase.execute(pautaId),  new Date(System.currentTimeMillis()));
 
                 System.out.println("Sessão da pauta com id " + pautaId + " foi fechada");
             }

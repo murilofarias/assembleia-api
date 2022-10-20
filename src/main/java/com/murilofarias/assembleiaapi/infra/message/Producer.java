@@ -33,7 +33,7 @@ public class Producer implements MessageProducer {
 
     @Override
     public void sendVoto(Voto voto) {
-        logger.info(String.format("#### -> Producing message -> %s", voto.getValor()));
+        logger.info(String.format("#### -> Voto com cpf %s com valor %s foi enviado para validação" ,   voto.getAssociado().getCpf(), voto.getValor().toString()));
         this.kafkaTemplateVotos.send(TOPIC2, new VotoMessageDto(voto));
     }
 }
