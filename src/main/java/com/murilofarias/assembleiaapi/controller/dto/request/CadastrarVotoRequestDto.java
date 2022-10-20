@@ -15,9 +15,6 @@ import javax.validation.constraints.Pattern;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CadastrarVotoRequestDto {
 
-    @NotNull(message="pautaId é obrigatória")
-    Long pautaId;
-
     @CPF(message = "cpf não é válido")
     @NotBlank(message = "cpf não poder ser branco")
     String cpfAssociado;

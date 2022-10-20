@@ -64,15 +64,24 @@ public class VotacaoController {
         return new ResponseEntity<>(pautasResponseDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/votos")
+    @GetMapping("/pautas/{id}/votos")
     public ResponseEntity<Page<VotoSemPautaDto>> encontrarVotos(
-            @RequestParam(value = "pautaId") Long pautaId,
+            @PathVariable(value = "id") Long pautaId,
             @Min(0) @RequestParam(value = "page", defaultValue = "0") Integer page,
             @Min(0) @RequestParam(value = "size", defaultValue = "5") Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Voto> votos = encontrarVotosUseCase.execute(pautaId, pageable);
         Page<VotoSemPautaDto> votoSemPautaDtos = votos.map(VotoSemPautaDto::new);
         return new ResponseEntity<>(votoSemPautaDtos, HttpStatus.OK);
+    }
+
+    @PostMapping("/pautas/{id}/votos")
+    public ResponseEntity<VotoResponseDto> cadastrarVoto(
+            @PathVariable("id") Long pautaId,
+            @Valid @RequestBody CadastrarVotoRequestDto cadastrarVotoRequestDto) {
+        String cpfFormatado = CpfParser.eliminateDotsAndDashes(cadastrarVotoRequestDto.getCpfAssociado());
+        Voto novoVoto = cadastrarVotoUseCase.execute(pautaId, cpfFormatado, cadastrarVotoRequestDto.getVoto());
+        return new ResponseEntity<>(new VotoResponseDto(novoVoto), HttpStatus.CREATED);
     }
 
     @GetMapping("/pautas/{id}/resultado")
@@ -92,13 +101,6 @@ public class VotacaoController {
         return new ResponseEntity<>(new PautaResponseDto(novaPauta), HttpStatus.CREATED);
     }
 
-
-    @PostMapping("/votos")
-    public ResponseEntity<VotoResponseDto> cadastrarVoto(@Valid @RequestBody CadastrarVotoRequestDto cadastrarVotoRequestDto) {
-        String cpfFormatado = CpfParser.eliminateDotsAndDashes(cadastrarVotoRequestDto.getCpfAssociado());
-        Voto novoVoto = cadastrarVotoUseCase.execute(cadastrarVotoRequestDto.getPautaId(), cpfFormatado, cadastrarVotoRequestDto.getVoto());
-        return new ResponseEntity<>(new VotoResponseDto(novoVoto), HttpStatus.CREATED);
-    }
 
 
 }
