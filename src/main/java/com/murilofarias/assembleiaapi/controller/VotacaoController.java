@@ -61,7 +61,7 @@ public class VotacaoController {
         Pageable pageable = PageRequest.of(page, size);
         Page<Pauta> pautas = listarPautasUseCase.execute(pageable);
         Page<PautaResponseDto> pautasResponseDto = pautas.map(PautaResponseDto::new);
-        return new ResponseEntity<>(pautasResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(pautasResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("/pautas/{id}/votos")
@@ -98,7 +98,7 @@ public class VotacaoController {
             @Valid @RequestBody AbrirSessaoRequestDto abrirSessaoRequestDto) {
 
         Pauta novaPauta = abrirSessaoUseCase.execute(id, abrirSessaoRequestDto.getDuracao());
-        return new ResponseEntity<>(new PautaResponseDto(novaPauta), HttpStatus.CREATED);
+        return new ResponseEntity<>(new PautaResponseDto(novaPauta), HttpStatus.OK);
     }
 
 
