@@ -23,7 +23,7 @@ public class Consumer {
 
 
 
-    @KafkaListener(topics = "votos", groupId = "group_id")
+    @KafkaListener(topics = "votos", groupId = "group_id", containerFactory = "kafkaListenerContainerFactory")
     public void consumeVoto(VotoMessageDto voto) throws IOException {
         logger.info(String.format("#### -> Voto com cpf %s, na pauta de id %s, foi recebido para validação" ,   voto.getAssociado().getCpf(), voto.getValor().toString()), voto.getPauta().getId());
         Voto votoValidado = validarVotoUseCase.execute(voto.getId(), voto.getAssociado().getCpf());
